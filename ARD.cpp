@@ -1,0 +1,83 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+long long int mod = 123456789;
+
+void multiply(long long int a[][2], long long int b[][2], long long int c[][2] );
+void power_n( long long int a[][2], long long int c[][2], long long int n );
+
+int main() 
+{
+	int t;
+	cin >> t;
+	long long int fn, fm;
+
+	long long int a[2][2] = { 1, 1, 1, 0 };
+	long long int c[2][2];
+
+	for ( int i = 0; i < t; i++ ) {
+		long long int n, m;
+		cin >> n;
+		
+		if ( n != 0 ) {
+			power_n(a, c, n );
+			fn = ( (c[1][1]) + 4 * ( n - 1) + 3  + mod ) % mod;
+		} else {
+			fn = 0;
+		}
+			
+		cout << fn << endl;
+	}
+	
+	return 0;
+}
+
+void multiply( long long int a[][2], long long int b[][2], long long int c[][2] ) {
+
+	long long int d[2][2], e[2][2];
+	
+	for ( int i = 0; i < 2; i++ ) {
+		for ( int j = 0; j < 2; j++ ) {
+			
+			e[i][j] = b[i][j];
+			d[i][j] = a[i][j];
+		}
+	}
+
+	for ( int i = 0; i < 2; i++ ) {
+		for ( int j = 0; j < 2; j++ ) {
+			int sum = 0;
+			for ( int k = 0; k < 2; k++ ) {
+				sum = ( ( sum % mod ) + ( d[i][k] * e[k][j] ) % mod );
+			}
+			c[i][j] = sum % mod ;
+		}
+	}
+}
+
+void power_n( long long int arr[][2], long long int sol[][2], long long int n ) {
+	
+	if ( n == 1 ) {
+		sol[0][0] = arr[0][0];
+		sol[0][1] = arr[0][1];
+		sol[1][0] = arr[1][0];
+		sol[1][1] = arr[1][1];
+
+		return;
+	}
+
+	if ( n == 2 ) {
+		multiply( arr, arr, sol );
+		return;
+	}
+	else if ( n % 2 == 0 ) {
+		power_n( arr, sol, n/2 );
+		multiply( sol, sol, sol);
+	} else {
+		power_n(arr, sol, n - 1);
+		multiply(arr, sol, sol );
+	}
+
+	return;
+}
